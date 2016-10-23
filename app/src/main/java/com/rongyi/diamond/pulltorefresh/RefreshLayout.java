@@ -53,7 +53,7 @@ public class RefreshLayout extends ViewGroup {
     private State state = State.RESET;
     private OnRefreshListener refreshListener;
     private boolean isAutoRefresh;
-    private View mIvTrans;
+
 
     // 刷新成功，显示500ms成功状态再滚动回顶部
     private Runnable delayToScrollTopRunnable = new Runnable() {
@@ -106,7 +106,6 @@ public class RefreshLayout extends ViewGroup {
                 view.setLayoutParams(layoutParams);
             }
             refreshHeader = view;
-            mIvTrans = view.findViewById(R.id.iv_trans);
             addView(refreshHeader);
         }
     }
@@ -363,17 +362,7 @@ public class RefreshLayout extends ViewGroup {
         if (refreshHeader instanceof RefreshHeader) {
             ((RefreshHeader) refreshHeader)
                     .onPositionChange(currentTargetOffsetTop, lastTargetOffsetTop, totalDragDistance, isTouch, state);
-            if (currentTargetOffsetTop > refreshHeader.getHeight()) {
-                int translationY = currentTargetOffsetTop - refreshHeader.getHeight();
 
-                int dp20 = Utils.dp2px(getContext(), 20);
-                if (translationY > dp20) {
-                    translationY = dp20;
-                }
-                mIvTrans.setTranslationY(dp20 - translationY);
-            } else {
-                mIvTrans.setTranslationY(Utils.dp2px(getContext(), 20));
-            }
         }
 
     }

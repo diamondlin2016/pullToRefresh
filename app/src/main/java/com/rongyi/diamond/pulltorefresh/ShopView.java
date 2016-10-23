@@ -47,8 +47,9 @@ public class ShopView extends RelativeLayout implements RefreshHeader {
     private int mWidth;
     private LayoutParams lp;
     private Random random = new Random();
-    View rongYi;
+    private View rongYi;
     public Bezier mBezierLine;
+    private View mIvTrans;
 
 
     public ShopView(Context context) {
@@ -81,6 +82,7 @@ public class ShopView extends RelativeLayout implements RefreshHeader {
         drawables[5] = getResources().getDrawable(R.mipmap.refresh_item6);
 
         View view = View.inflate(getContext(), R.layout.widget_rongyi, this);
+        mIvTrans = view.findViewById(R.id.iv_trans);
         rongYi = view.findViewById(R.id.iv_rongyi);
         mBezierLine = (Bezier) view.findViewById(R.id.bezier_line);
         //获取图的宽高 用于后面的计算
@@ -103,7 +105,7 @@ public class ShopView extends RelativeLayout implements RefreshHeader {
     }
 
 
-    public void addHeart() {
+    public void addShop() {
         ImageView imageView = new ImageView(mContext);
         //随机选一个
         int i = random.nextInt(6);
@@ -118,9 +120,7 @@ public class ShopView extends RelativeLayout implements RefreshHeader {
 
     private Animator getAnimator(View target) {
         AnimatorSet set = getEnterAnimtor(target);
-
         ValueAnimator bezierValueAnimator = getBezierValueAnimator(target);
-
         AnimatorSet finalSet = new AnimatorSet();
         finalSet.playSequentially(set);
         finalSet.playSequentially(set, bezierValueAnimator);
@@ -200,6 +200,18 @@ public class ShopView extends RelativeLayout implements RefreshHeader {
     @Override
     public void onPositionChange(float currentPos, float lastPos, float refreshPos, boolean isTouch, RefreshLayout.State state) {
         mBezierLine.setControlY(currentPos);
+        
+        if (currentPos > mHeight) {
+            int translationY = (int) (currentPos - mHeight);
+
+            int dp20 = Utils.dp2px(getContext(), 20);
+            if (translationY > dp20) {
+                translationY = dp20;
+            }
+            mIvTrans.setTranslationY(dp20 - translationY);
+        } else {
+            mIvTrans.setTranslationY(Utils.dp2px(getContext(), 20));
+        }
     }
 
     @Override
@@ -247,7 +259,7 @@ public class ShopView extends RelativeLayout implements RefreshHeader {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            addHeart();
+            addShop();
             handler.sendEmptyMessageDelayed(0, 250);
         }
     };
